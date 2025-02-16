@@ -2,3 +2,74 @@
 - Is there a difference in the flow of execution from when the code was in the setTimeout function?
 - Is the flow of execution in both these examples different from the flow of execution with the examples using the fetch() API, which also returns a promise? 
 - If yes, explain the code execution difference. Add your explanation to this file.
+
+Yes, there is a difference in flow of exection with and without setTimeout function.
+Below is the two different flow of exections
+
+Flow of execution with setTimeout() 
+-----------------------------------
+Sum called ... 
+returning from sum
+sumPromise1: Promise { <pending> }
+Sum called ... 
+returning from sum
+sumPromise2: Promise { <rejected> 'Cannot sum an empty array' }
+Cannot sum an empty array
+Adding 1 to sum
+Adding 2 to sum
+Adding 3 to sum
+Adding 4 to sum
+Adding 5 to sum
+Adding 6 to sum
+Adding 7 to sum
+Adding 8 to sum
+Adding 9 to sum
+45
+
+Flow of execution without setTimeout()
+--------------------------------------
+Sum called ... 
+Adding 1 to sum
+Adding 2 to sum
+Adding 3 to sum
+Adding 4 to sum
+Adding 5 to sum
+Adding 6 to sum
+Adding 7 to sum
+Adding 8 to sum
+Adding 9 to sum
+returning from sum
+sumPromise1: Promise { 45 }
+Sum called ...
+returning from sum
+sumPromise2: Promise { <rejected> 'Cannot sum an empty array' }
+45
+Cannot sum an empty array
+
+
+Before Removing setTimeout()
+----------------------------
+Returns from sum happens immediately
+The summation runs asynchronously beacuse of the setTimeout in the next event loop cycle (gets added to the micro task queue).
+sumPromise1 logs as pending because the summation hasn’t started yet.
+The rejection for an empty array happens immediately
+But actual summation of the first array which ia promise resolution happens now.
+ 
+After Removing setTimeout()
+---------------------------
+The summation runs immediately, without waiting for the next event loop
+(The summation happens synchronously within the Promise constructor & The promise resolves immediately after computation).
+returning from sum happens after the summation.
+sumPromise1 is already resolved when logged.
+The rejected promise logs right after the function call.
+
+
+How This Differs from the fetch() API Execution Flow
+----------------------------------------------------------
+fetch() does not execute synchronously inside the Promise constructor.
+It executes asynchronously in the next event loop.
+
+fetch() returns a pending promise immediately and other synchronous code continues executing.
+fetch() promise resolves, then executes .then() callback.
+
+So fetch() is similar to the code using the setTimeout(). 
